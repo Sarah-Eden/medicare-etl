@@ -27,7 +27,7 @@ def df_to_snowflake(conn, df, table_name):
     write_pandas(conn, df, table_name, auto_create_table=True, overwrite=True)
 
 
-def load_data(path):
+def load_data(file_path):
     """Loads data from a CSV file to a DataFrame, suppresses mixed datatype warning message."""
-    df = pd.read_csv(path, low_memory=False)
+    df = pd.read_csv(file_path, low_memory=False)
     return df
