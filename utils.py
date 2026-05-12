@@ -31,3 +31,6 @@ def load_data(file_path):
     """Loads data from a CSV file to a DataFrame, suppresses mixed datatype warning message."""
     df = pd.read_csv(file_path, low_memory=False)
     return df
+
+def standardize_zipcode(zipcode_column):
+    return zipcode_column.astype(str).str.zfill(5)
