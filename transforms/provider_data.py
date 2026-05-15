@@ -1,6 +1,5 @@
 import pandas as pd
-import numpy as np
-from utils import load_data, standardize_zipcode
+from transforms.utils import load_data, standardize_zipcode, standardize_column_names
 
 DEMOGRAPHICS_COLUMNS = [
     'Rndrng_NPI',
@@ -67,7 +66,7 @@ def create_demographics_table(df):
         .str.zfill(2)
     )
 
-    demographics_df.columns = [col.upper() for col in demographics_df.columns]
+    demographics_df = standardize_column_names(demographics_df)
 
     demographics_df.drop_duplicates(inplace=True)
 
@@ -93,7 +92,7 @@ def create_services_table(df):
     """
     services_df = df[SERVICES_COLUMNS].copy()
 
-    services_df.columns = [col.upper() for col in services_df.columns]
+    services_df = standardize_column_names(services_df)
 
     return services_df
 
@@ -108,7 +107,7 @@ def transform_provider_data(file_path):
 
     Returns:
         demographic_df (DataFrame): Standardized provider demographic data. One row per RNDRNG_NPI.
-        services_df aut(DataFrame): Standardized provider service data. One row per NPI and HCPCS code combination.
+        services_df (DataFrame): Standardized provider service data. One row per NPI and HCPCS code combination.
     """
 
     provider_df = load_data(file_path)
