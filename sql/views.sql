@@ -85,3 +85,30 @@ CREATE OR REPLACE VIEW hospital_quality_summary_view AS (
     END AS compared_to_national_category
     FROM hospital_unplanned_visits   
 );
+
+CREATE OR REPLACE VIEW hcahps_summary_view AS (
+    SELECT
+        facility_id,
+        hcahps_measure_id,
+        hcahps_question,
+        patient_survey_star_rating,
+        number_of_completed_surveys,
+        survey_response_rate_percent     
+    FROM hospital_hcahps
+    WHERE hcahps_question LIKE '%star%'
+);
+
+
+CREATE OR REPLACE VIEW hcahps_detailed_view AS (
+    SELECT
+        facility_id,
+        hcahps_measure_id,
+        hcahps_question,
+        hcahps_answer_description,
+        hcahps_answer_percent,
+        number_of_completed_surveys,
+        survey_response_rate_percent
+    FROM hospital_hcahps
+    WHERE hcahps_question NOT LIKE '%star%'
+        AND hcahps_question NOT LIKE '%linear%'
+);
