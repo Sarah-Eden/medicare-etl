@@ -124,26 +124,28 @@ Publicaly reported final scores and performance category scores for clinicans th
 
 Individual measure-level detail for MIPS quality reporting.
 
-| Column              | Type   | Description                                                                                                                                          |
-| ------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NPI                 | Number | PK, FK to PROVIDER_DEMOGRAPHICS                                                                                                                      |
-| IND_PAC_ID          | Text   | Individual PECOS Associate Control ID                                                                                                                |
-| PROVIDER_LAST_NAME  | Text   |                                                                                                                                                      |
-| PROVIDER_FIRST_NAME | Text   |                                                                                                                                                      |
-| APM_AFFL_1          | Text   | Alternative Payment Model affiliation 1                                                                                                              |
-| APM_AFFL_2          | Text   | APM affiliation 2                                                                                                                                    |
-| APM_AFFL_3          | Text   | APM affiliation 3                                                                                                                                    |
-| APM_AFFL_4          | Float  | APM affiliation 4, all null in PY2023                                                                                                                |
-| MEASURE_CD          | Text   | Measure code (PK)                                                                                                                                    |
-| MEASURE_TITLE       | Text   | Measure description                                                                                                                                  |
-| INVS_MSR            | Text   | Inverse measure indicator (Y/N)                                                                                                                      |
-| ATTESTATION_VALUE   | Text   | Attestation response for yes/no measures                                                                                                             |
-| PRF_RATE            | Float  | Performance rate                                                                                                                                     |
-| PATIENT_COUNT       | Float  | Number of patients included in the measure denominator                                                                                               |
-| STAR_VALUE          | Float  | Star rating assigned based on performance at the measure, stratum, collection type, and entity type level                                            |
-| FIVE_STAR_BENCHMARK | Float  | The established ABC™ benchmark used to assign a five-star rating for a given measure and collection type                                             |
-| COLLECTION_TYPE     | Text   | ATT for Web Attestation, CLM for Claims, EHR for Electronic Health Record, QCDR for Qualified Clinical Data Registry, and REG for Qualified Registry |
-| CCXP_IND            | Text   | Complex care experience indicator (Y/N)                                                                                                              |
+| Column | Type | Description |
+
+| Column              | Type   | Description                                                                                                                      |
+| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| NPI                 | Number | PK, FK to PROVIDER_DEMOGRAPHICS                                                                                                  |
+| IND_PAC_ID          | Text   | Individual PECOS Associate Control ID                                                                                            |
+| PROVIDER_LAST_NAME  | Text   |                                                                                                                                  |
+| PROVIDER_FIRST_NAME | Text   |                                                                                                                                  |
+| APM_AFFL_1          | Text   | Alternative Payment Model affiliation 1                                                                                          |
+| APM_AFFL_2          | Text   | APM affiliation 2                                                                                                                |
+| APM_AFFL_3          | Text   | APM affiliation 3                                                                                                                |
+| APM_AFFL_4          | Float  | APM affiliation 4, all null in PY2023                                                                                            |
+| MEASURE_CD          | Text   | Measure code (PK)                                                                                                                |
+| MEASURE_TITLE       | Text   | Measure description                                                                                                              |
+| INVS_MSR            | Text   | Inverse measure indicator (Y/N)                                                                                                  |
+| ATTESTATION_VALUE   | Text   | Attestation response for yes/no measure                                                                                          |
+| PRF_RATE            | Float  | Performance rate                                                                                                                 |
+| PATIENT_COUNT       | Float  | Number of patients included in the measure denominator                                                                           |
+| STAR_VALUE          | Float  | Star rating assigned based on performance at the measure, stratum, collection type, and entity type level                        |
+| FIVE_STAR_BENCHMARK | Float  | The established ABC™ benchmark used to assign a five-star rating for a given measure and collection type                         |
+| COLLECTION_TYPE     | Text   | ATT: Web Attestation, CLM: Claims, EHR: Electronic Health Record, QCDR: Qualified Clinical Data Registry, REG Qualified Registry |
+| CCXP_IND            | Text   | Complex care experience indicator (Y/N)                                                                                          |
 
 ### HOSPITAL_COMPLICATIONS_DEATHS
 
@@ -201,23 +203,23 @@ Readmission and return visit measures by hospital. Same structure as HOSPITAL_CO
 
 Healthcare-associated infection measures by hospital.
 
-| Column               | Type | Description                                     |
-| -------------------- | ---- | ----------------------------------------------- |
-| FACILITY_ID          | Text | PK, FK to HOSPITAL_GENERAL_INFORMATION          |
-| FACILITY_NAME        | Text |                                                 |
-| ADDRESS              | Text |                                                 |
-| CITY_TOWN            | Text |                                                 |
-| STATE                | Text |                                                 |
-| ZIP_CODE             | Text | 5-digit zip code                                |
-| COUNTY_PARISH        | Text |                                                 |
-| TELEPHONE_NUMBER     | Text |                                                 |
-| MEASURE_ID           | Text | PK                                              |
-| MEASURE_NAME         | Text |                                                 |
-| COMPARED_TO_NATIONAL | Text | Performance vs national benchmark               |
-| SCORE                | Text | Standardized Infection Ratio or component value |
-| FOOTNOTE             | Text | Footnote codes, may be comma-separated          |
-| START_DATE           | Text | Measurement period start                        |
-| END_DATE             | Text | Measurement period end                          |
+| Column               | Type | Description                            |
+| -------------------- | ---- | -------------------------------------- |
+| FACILITY_ID          | Text | PK, FK to HOSPITAL_GENERAL_INFORMATION |
+| FACILITY_NAME        | Text |                                        |
+| ADDRESS              | Text |                                        |
+| CITY_TOWN            | Text |                                        |
+| STATE                | Text |                                        |
+| ZIP_CODE             | Text |                                        |
+| COUNTY_PARISH        | Text |                                        |
+| TELEPHONE_NUMBER     | Text |                                        |
+| MEASURE_ID           | Text | PK                                     |
+| MEASURE_NAME         | Text |                                        |
+| COMPARED_TO_NATIONAL | Text |                                        |
+| SCORE                | Text |                                        |
+| FOOTNOTE             | Text |                                        |
+| START_DATE           | Text | Measurement period start               |
+| END_DATE             | Text | Measurement period end                 |
 
 ### HOSPITAL_HCAHPS
 
@@ -252,32 +254,26 @@ Hospital Consumer Assessment of Healthcare Providers and Systems survey results.
 
 ### PROVIDER_PROFILE_VIEW
 
-One row per individual provider. Combines demographics with best MIPS score.
+One row per individual provider. Combines demographics with best individual MIPS score.
 
-| Column                     | Source                | Description                   |
-| -------------------------- | --------------------- | ----------------------------- |
-| RNDRNG_NPI                 | PROVIDER_DEMOGRAPHICS |                               |
-| RNDRNG_PRVDR_LAST_ORG_NAME | PROVIDER_DEMOGRAPHICS |                               |
-| RNDRNG_PRVDR_FIRST_NAME    | PROVIDER_DEMOGRAPHICS |                               |
-| RNDRNG_PRVDR_TYPE          | PROVIDER_DEMOGRAPHICS |                               |
-| RNDRNG_PRVDR_CITY          | PROVIDER_DEMOGRAPHICS |                               |
-| RNDRNG_PRVDR_STATE_ABRVTN  | PROVIDER_DEMOGRAPHICS |                               |
-| MAX_MIPS_SCORE             | Derived               | MAX(FINAL_MIPS_SCORE) per NPI |
-
-### PROVIDER_HOSPITAL_INFO_VIEW
-
-One row per provider-hospital pair. Filtered to individual providers only.
-
-| Column                  | Source                       | Description |
-| ----------------------- | ---------------------------- | ----------- |
-| RNDRNG_NPI              | PROVIDER_DEMOGRAPHICS        |             |
-| FACILITY_ID             | HOSPITAL_GENERAL_INFORMATION |             |
-| FACILITY_NAME           | HOSPITAL_GENERAL_INFORMATION |             |
-| HOSPITAL_OVERALL_RATING | HOSPITAL_GENERAL_INFORMATION |             |
+| Column                    | Source                                           | Description                   |
+| ------------------------- | ------------------------------------------------ | ----------------------------- |
+| NPI                       | PROVIDER_DEMOGRAPHICS RNDRNG_NPI                 |                               |
+| LAST_NAME                 | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_LAST_ORG_NAME |                               |
+| FIRST_NAME                | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_FIRST_NAME    |                               |
+| CREDENTIALS               | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_CRDNTLS       |                               |
+| PROVIDER_TYPE             | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_TYPE          |                               |
+| ADDRESS                   | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_ST1           |                               |
+| CITY                      | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_CITY          |                               |
+| STATE                     | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_STATE_ABRVTN  |                               |
+| ZIP_CODE                  | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_ZIP5          |                               |
+| RUCA                      | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_RUCA          |                               |
+| RUCA_DESC                 | PROVIDER_DEMOGRAPHICS RNDRNG_PRVDR_RUCA_DESC     |                               |
+| MAX_INDIVIDUAL_MIPS_SCORE | MIPS_PERFORMANCE SOURCE = "Individual"           | MAX(FINAL_MIPS_SCORE) per NPI |
 
 ### HOSPITAL_QUALITY_SUMMARY_VIEW
 
-One row per facility-measure. Combines complications/deaths, unplanned visits, and HAI into a single view. HAI filtered to SIR summary measures only.
+One row per facility-measure. Combines data from HOSPITAL_COMPLICATIONS_DEATHS, HOSPITAL_HAI, and HOSPITAL_UNPLANNED_VISITS into a single view. HAI filtered to SIR summary measures only.
 
 | Column                        | Source        | Description                                                                            |
 | ----------------------------- | ------------- | -------------------------------------------------------------------------------------- |
@@ -291,27 +287,25 @@ One row per facility-measure. Combines complications/deaths, unplanned visits, a
 
 ### HCAHPS_SUMMARY_VIEW
 
-One row per facility per star rating domain. 11 rows per facility.
-
-| Column                       | Source          | Description     |
-| ---------------------------- | --------------- | --------------- |
-| FACILITY_ID                  | HOSPITAL_HCAHPS |                 |
-| HCAHPS_MEASURE_ID            | HOSPITAL_HCAHPS |                 |
-| HCAHPS_QUESTION              | HOSPITAL_HCAHPS |                 |
-| PATIENT_SURVEY_STAR_RATING   | HOSPITAL_HCAHPS | 1-5 star rating |
-| NUMBER_OF_COMPLETED_SURVEYS  | HOSPITAL_HCAHPS |                 |
-| SURVEY_RESPONSE_RATE_PERCENT | HOSPITAL_HCAHPS |                 |
-
-### HCAHPS_DETAILED_VIEW
-
-One row per facility per survey response. 72 rows per facility. Excludes star rating and linear mean score rows.
+One row per facility per star rating domain.
 
 | Column                       | Source          | Description |
 | ---------------------------- | --------------- | ----------- |
 | FACILITY_ID                  | HOSPITAL_HCAHPS |             |
 | HCAHPS_MEASURE_ID            | HOSPITAL_HCAHPS |             |
 | HCAHPS_QUESTION              | HOSPITAL_HCAHPS |             |
-| HCAHPS_ANSWER_DESCRIPTION    | HOSPITAL_HCAHPS |             |
-| HCAHPS_ANSWER_PERCENT        | HOSPITAL_HCAHPS |             |
+| PATIENT_SURVEY_STAR_RATING   | HOSPITAL_HCAHPS |             |
 | NUMBER_OF_COMPLETED_SURVEYS  | HOSPITAL_HCAHPS |             |
 | SURVEY_RESPONSE_RATE_PERCENT | HOSPITAL_HCAHPS |             |
+
+### HCAHPS_DETAILED_VIEW
+
+One row per facility per survey response. Excludes star rating and linear mean score rows.
+
+| Column                    | Source          | Description |
+| ------------------------- | --------------- | ----------- |
+| FACILITY_ID               | HOSPITAL_HCAHPS |             |
+| HCAHPS_MEASURE_ID         | HOSPITAL_HCAHPS |             |
+| HCAHPS_QUESTION           | HOSPITAL_HCAHPS |             |
+| HCAHPS_ANSWER_DESCRIPTION | HOSPITAL_HCAHPS |             |
+| HCAHPS_ANSWER_PERCENT     | HOSPITAL_HCAHPS |             |
