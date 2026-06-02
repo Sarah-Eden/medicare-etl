@@ -8,7 +8,9 @@ CREATE OR REPLACE VIEW provider_profile_view AS (
         d.rndrng_prvdr_st1 AS address,
         d.rndrng_prvdr_city AS city,
         d.rndrng_prvdr_state_abrvtn AS state, 
+        d.rndrng_prvdr_zip5 AS zip_code,
         d.rndrng_prvdr_ruca AS ruca,
+        d.rndrng_prvdr_ruca_desc AS ruca_desc,
         m.max_individual_mips_score
     FROM provider_demographics d
     LEFT JOIN (
