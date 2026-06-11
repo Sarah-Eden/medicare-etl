@@ -6,13 +6,9 @@ Design decisions and data quirks that affect how this data should be used.
 
 All dashboard views filter to individual providers (RNDRNG_PRVDR_ENT_CD = 'I'). The billing data includes organizations (labs, group practices, health systems) that bill under a single NPI.
 
-## MIPS Score Resolution
-
-Providers can have multiple MIPS records from different scoring pathways (individual, group, APM). The provider_profile_view resolves this to one score per NPI using MAX(FINAL_MIPS_SCORE), consistent with how CMS determines payment adjustments. Any analysis comparing MIPS scores across providers should account for the source type.
-
 ## Billing Data
 
-Submitted charges (AVG_SBMTD_CHRG) are set by the provider and average roughly 4x what Medicare allows. They are not meaningful for comparison. Use AVG_MDCR_STDZD_AMT for analysis as it adjusts for geographic cost differences.
+Submitted charges (AVG_SBMTD_CHRG) are set by the provider and are not meaningful for comparison. AVG_MDCR_STDZD_AMT should be used for analysis as it adjusts for geographic cost differences.
 
 TOT_BENES is per service line. Summing it across services for a provider overcounts because the same patient appears in multiple service lines. It works as a rough volume indicator but is not a unique patient count. No unique patient count is derivable from these datasets.
 
