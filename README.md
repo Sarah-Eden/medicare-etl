@@ -1,68 +1,135 @@
-# Medicare Provider & Hospital Quality ETL Pipeline
+# Medicare Provider & Hospital Quality Analytics Pipeline
 
-[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
-[![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=fff)](#)
-[![Snowflake](https://img.shields.io/badge/Snowflake-29B5E8?logo=snowflake&logoColor=fff)](#)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![Snowflake](https://img.shields.io/badge/snowflake-%2329B5E8.svg?style=for-the-badge&logo=snowflake&logoColor=white)
+[![Power BI](https://img.shields.io/badge/power_bi-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](#)
 
 ## Project Overview
 
-An ETL pipeline that loads CMS Medicare public data into Snowflake for provider and hospital quality analysis. Nine source files are cleaned, standardized, and loaded into ten tables with referential integrity. Snowflake views combine provider demographics, MIPS performance scores, hospital affiliations, and hospital quality measures into a unified data layer for dashboard development.
+This project builds an end-to-end ETL pipeline to analyze Medicare provider and hospital quality data published by the Centers for Medicare and Medicaid Services (CMS). The pipeline extracts data from eleven source files, standardizes column names and data types, and loads the data into Snowflake. The data is then imported into Power BI to create dashboards that highlight provider performance by specialty and hospitals by quality and patient experience.
 
 ## Data
 
-- **Source:** [CMS Provider Data Catalog](https://data.cms.gov)
-- **Analysis Period:** 2023
-- **Scope:** 1.17M providers, 5,400 hospitals, 478K MIPS-scored clinicians
-- **Tables:** 10 base tables, 5 views
-  Source files come from multiple CMS archives to align on the 2023 analysis period. See [docs/data_sources.md](docs/data_sources.md) for download links and archive selection rationale.
+All data is publicly available from [CMS Data](https://data.cms.gov/) and the [CMS Provider Data Catalog](https://data.cms.gov). Source files come from multiple CMS archives to ensure all are from the same reporting period. See docs/data_sources.md for the complete list of source files, download locations, and archive selection.
 
 ## Pipeline
 
-`main.py` orchestrates the full pipeline. A single transform function in `transforms/transforms.py` handles all source files through parameterized cleaning: dtype overrides, row filtering, column selection, and column name standardization. The provider billing file is split into demographics (one row per NPI) and services (one row per NPI + HCPCS code) tables.
-
-Data is loaded into Snowflake using `write_pandas` with `auto_create_table=True`. Primary and foreign key constraints are applied via `sql/constraints.sql`.
+**Extraction:** raw CMS CSV files downloaded and loaded using Python/pandas
+**Transformation:** data cleaning, type standardization, and schema normalization applied before loading
+**Loading:** transformed data written to Snowflake via snowflake-connector-python using RSA key pair authentication
+**Modeling:** SQL views created in Snowflake to support dashboard requirements
+**Visualization:** Power BI dashboard in Import mode with DAX measures and calculated columns
 
 ## Schema
 
-The pipeline produces two provider tables, one hospital demographics table, one provider-hospital affiliation table, two MIPS tables, and four hospital quality tables.
+See the project [Data Dictionary](docs/data_dictionary.md) for full details about each table.
 
-Provider tables link to hospital data through the affiliation table, which maps NPI to facility certification number. MIPS tables link to providers on NPI.
+```mermaid
 
-Five views were created from the base tables:
+erDiagram
+    PROVIDER_DEMOGRAPHICS ||--o{ PROVIDER_SERVICES: "RNDRNG_NPI"
+    PROVIDER_DEMOGRAPHICS ||--o{ PROVIDER_SUMMARY: "RNDRNG_NPI"
+    PROVIDER_DEMOGRAPHICS ||--o{ MIPS_PERFORMANCE: "NPI"
+    PROVIDER_DEMOGRAPHICS ||--o{ MIPS_METRICS: "NPI"
 
-- **provider_profile_view** — one row per individual provider with best MIPS score
-- **provider_hospital_info_view** — provider-hospital affiliations with hospital name and rating
-- **hospital_quality_summary_view** — complications, unplanned visits, and HAI measures with standardized comparison categories
-- **hcahps_summary_view** — patient experience star ratings by domain
-- **hcahps_detailed_view** — patient experience survey response percentages
+    HOSPITAL_GENERAL_INFORMATION ||--o{ HOSPITAL_COMPLICATIONS_DEATHS: "FACILITY_ID"
+    HOSPITAL_GENERAL_INFORMATION ||--o{ HOSPITAL_UNPLANNED_VISITS: "FACILITY_ID"
+    HOSPITAL_GENERAL_INFORMATION ||--o{ HOSPITAL_HAI: "FACILITY_ID"
+    HOSPITAL_GENERAL_INFORMATION ||--o{ HOSPITAL_HCAHPS: "FACILITY_ID"
 
-## Project Structure
+    PROVIDER_HOSPITAL_AFFILIATION }o--|| PROVIDER_DEMOGRAPHICS: "NPI"
+    PROVIDER_HOSPITAL_AFFILIATION }o--|| HOSPITAL_GENERAL_INFORMATION: "FACILITY_ID"
+
+    PROVIDER_DEMOGRAPHICS {
+        string RNDRNG_NPI PK
+    }
+
+    PROVIDER_SERVICES {
+        string RNDRNG_NPI PK, FK
+        string HCPCS_CD PK
+    }
+
+    PROVIDER_SUMMARY {
+        string RNDRNG_NPI PK, FK
+    }
+
+    MIPS_PERFORMANCE {
+        string NPI PK, FK
+        string ORG_PAC_ID PK
+    }
+
+    MIPS_METRICS {
+        string NPI PK, FK
+        string MEASURE_CD PK
+    }
+
+    HOSPITAL_GENERAL_INFORMATION {
+        string FACILITY_ID PK
+    }
+
+    HOSPITAL_COMPLICATIONS_DEATHS {
+        string FACILITY_ID PK, FK
+        string MEASURE_ID PK
+    }
+
+    HOSPITAL_UNPLANNED_VISITS {
+        string FACILITY_ID PK, FK
+        string MEASURE_ID PK
+    }
+
+    HOSPITAL_HAI {
+        string FACILITY_ID PK, FK
+        string MEASURE_ID PK
+    }
+
+    HOSPITAL_HCAHPS {
+        string FACILITY_ID PK, FK
+        string HCAHPS_MEASURE_ID PK
+    }
+
+    PROVIDER_HOSPITAL_AFFILIATION {
+        string NPI PK
+        string FACILITY_AFFILIATIONS_CERTIFICATION_NUMBER PK
+    }
+
+    RUCA_ZIP_CODES {
+        string ZIPCODE PK
+        string PRIMARYRUCA
+    }
 
 ```
-medicare-etl/
-├── main.py
-├── requirements.txt
-├── transforms/
-│   ├── transforms.py
-│   └── utils.py
-├── sql/
-│   ├── constraints.sql
-│   └── views.sql
-└── docs/
-    ├── data_sources.md
-    ├── data_dictionary.md
-    └── transform_notes.md
-```
+
+## Dashboard
+
+#### High Level Summary of the Entire Dataset
+
+![Overview](img/overview_dashboard.png)
+
+#### Provider Service and Quality by Medical Specialty
+
+![Specialty](img/specialty_dashboard.png)
+
+#### Hospital Quality and Patient Experience
+
+![Hospital](img/hospital_dashboard.png)
 
 ## Limitations
 
-- This data covers Medicare fee-for-service only. Commercial and Medicaid billing are not represented.
-- MIPS scores are available for approximately 43% of individual providers. Coverage is limited by MIPS eligibility thresholds.
-- Submitted charges are provider-set and not meaningful for cost comparison. Standardized amounts should be used instead.
-- No unique patient count is derivable from this data.
-- The pipeline uses drop-and-recreate loading. Incremental loading is not implemented.
+- This pipeline uses drop-and-recreate loading and is designed specifically for the 2023 data sets used in the project. Longitudinal analysis of these data sets is not possible with the current configuration.
+- CMS does not have a standard reporting period or source for all measures. Data from each measure set is collected in differing time frames, making direct comparison between published sets challenging. Care was taken to ensure the files selected for this project all include the period of time from January to December 2023; however, some measure sets have longer reporting cycles and will include data collected outside that range.
 
 ## How To Run
+
+### Prerequisites
+
+- Python 3.14
+- Snowflake account with key-pair authentication
+- Power Bi Desktop
+
+### Installation
+
+Clone the repository and install requirements.
 
 ```bash
 git clone https://github.com/Sarah-Eden/medicare-etl.git
@@ -70,19 +137,15 @@ cd medicare-etl
 pip install -r requirements.txt
 ```
 
-Create a `.env` file with Snowflake credentials:
+Configure the database connection, replace environment variables with your credentials.
 
-```
-SF_ACCOUNT=your_account
-SF_USER=your_user
-SF_PASSWORD=your_password
-SF_ROLE=your_role
-SF_DATABASE=your_database
-SF_SCHEMA=your_schema
-SF_WAREHOUSE=your_warehouse
+```bash
+copy .env.example .env
 ```
 
 Download source files from CMS (see [docs/data_sources.md](docs/data_sources.md)) and place them in a `data/` directory.
+
+Run main pipeline to extract and transform data from the CSV files and load it into snowflake.
 
 ```bash
 python main.py
