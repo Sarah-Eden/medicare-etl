@@ -367,7 +367,7 @@ One row per facility-measure. Combines data from HOSPITAL_COMPLICATIONS_DEATHS, 
 
 ### HCAHPS_SUMMARY_VIEW
 
-One row per facility per star rating domain. Contains star ratings and survey response rates.
+One row per facility per star rating domain.
 
 | Column                       | Source          | Description                    |
 | ---------------------------- | --------------- | ------------------------------ |
@@ -380,7 +380,7 @@ One row per facility per star rating domain. Contains star ratings and survey re
 
 ### HCAHPS_DETAILED_VIEW
 
-One row per facility per survey question and answer option. Contains response percentages for each answer choice.
+One row per facility per survey question and answer option.
 
 | Column                    | Source          | Description                                        |
 | ------------------------- | --------------- | -------------------------------------------------- |
