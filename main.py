@@ -142,7 +142,7 @@ try:
     )
 
     demographics_df.drop_duplicates(inplace=True)
-    if demographics_df.shape[0] != services_df['RNDRNG_NPI'].nunique():
+    if demographics_df.shape[0] != demographics_df['RNDRNG_NPI'].nunique():
         raise ValueError('Duplicate NPIs in demographics after duplicates dropped.')
 
     df_to_snowflake(snow_conn, demographics_df, 'PROVIDER_DEMOGRAPHICS')
