@@ -1,4 +1,4 @@
-import snowflake.connector
+import snowflake.connector as sc
 from snowflake.connector.pandas_tools import write_pandas
 from dotenv import load_dotenv
 import os
@@ -9,15 +9,25 @@ def create_snowflake_connection():
     """Creates a connection to snowflake."""
     load_dotenv()
 
-    conn = snowflake.connector.connect(
-        account=os.environ.get('SF_ACCOUNT'),
-        user=os.environ.get('SF_USER'),
-        password=os.environ.get('SF_PASSWORD'),
-        role=os.environ.get('SF_ROLE'),
-        database=os.environ.get('SF_DATABASE'),
-        schema=os.environ.get('SF_SCHEMA'),
-        warehouse=os.environ.get('SF_WAREHOUSE'),
-    )
+    conn_params = {
+        'account': os.environ.get('SNOWFLAKE_ACCOUNT'),
+        'user': os.environ.get('SNOWFLAKE_USER'),
+        'role': os.environ.get('SNOWFLAKE_ROLE'),
+        'authenticator': 'SNOWFLAKE_JWT',
+        'private_key_file': os.environ.get('SNOWFLAKE_PRIVATE_KEY_PATH'),
+        'warehouse': os.environ.get('SNOWFLAKE_WAREHOUSE'),
+        'database': os.environ.get('SNOWFLAKE_DATABASE'),
+        'schema': os.environ.get('SNOWFLAKE_SCHEMA'),
+    }
+
+    missing = [key for key, value in conn_params.items() if value is None]
+
+    if missing:
+        raise ValueError(
+            f'Values missing from connection parameters: {", ".join(missing)}'
+        )
+
+    conn = sc.connect(**conn_params)
 
     return conn
 
