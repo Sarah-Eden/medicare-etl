@@ -2,7 +2,6 @@ import snowflake.connector as sc
 from snowflake.connector.pandas_tools import write_pandas
 from dotenv import load_dotenv
 import os
-import pandas as pd
 
 
 def create_snowflake_connection():
@@ -35,4 +34,9 @@ def create_snowflake_connection():
 def df_to_snowflake(conn, df, table_name):
     """Writes a DataFrame to a Snowflake table, creating or overwriting the table if it exists."""
     df = df.reset_index(drop=True)
-    write_pandas(conn, df, table_name, auto_create_table=True, overwrite=True)
+    success, nchunks, nrows, _ = write_pandas(
+        conn, df, table_name, auto_create_table=True, overwrite=True
+    )
+
+    if not success:
+        raise RuntimeError(f'write_pandas failed for table {table_name}')

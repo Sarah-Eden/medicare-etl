@@ -62,7 +62,7 @@ All data is publicly available from the Centers for Medicare & Medicaid Services
 
 ### Healthcare Associated Infections (HAI)
 
-**File:** Healthcare_Associated_Infections.csv
+**File:** Healthcare_Associated_Infections_Hospital.csv
 **Source:** [Hospitals Archived Data Snapshots](https://data.cms.gov/provider-data/archived-data/hospitals)
 **Archive Date:** 10/30/2024
 **Snowflake Table:** HOSPITAL_HAI

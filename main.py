@@ -121,127 +121,137 @@ PROVIDER_SUMMARY_KEEP_COLUMNS = [
     'Bene_CC_PH_Stroke_TIA_V2_Pct',
 ]
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-stream_handler = logging.StreamHandler()
-logger.addHandler(stream_handler)
 
-snow_conn = None
-current_table = ""
+def main():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    stream_handler = logging.StreamHandler()
+    logger.addHandler(stream_handler)
 
-try:
-    snow_conn = create_snowflake_connection()
+    snow_conn = None
+    current_table = ""
 
-    logger.info('Starting file processing.')
+    try:
+        current_table = "Snowflake Connection"
+        snow_conn = create_snowflake_connection()
 
-    current_table = 'Provider Services'
-    demographics_df, services_df = transform_data(
-        PROVIDER_SERVICE_DATA,
-        specify_dtype={'Rndrng_Prvdr_Zip5': str, 'Rndrng_Prvdr_State_FIPS': str},
-        split_data=PROVIDER_DEMOGRAPHICS_SERVICES_COLUMN_SPLIT,
-    )
+        logger.info('Starting file processing.')
 
-    demographics_df.drop_duplicates(inplace=True)
-    if demographics_df.shape[0] != demographics_df['RNDRNG_NPI'].nunique():
-        raise ValueError('Duplicate NPIs in demographics after duplicates dropped.')
+        current_table = 'Provider Services'
+        demographics_df, services_df = transform_data(
+            PROVIDER_SERVICE_DATA,
+            specify_dtype={'Rndrng_Prvdr_Zip5': str, 'Rndrng_Prvdr_State_FIPS': str},
+            split_data=PROVIDER_DEMOGRAPHICS_SERVICES_COLUMN_SPLIT,
+        )
 
-    df_to_snowflake(snow_conn, demographics_df, 'PROVIDER_DEMOGRAPHICS')
-    df_to_snowflake(snow_conn, services_df, 'PROVIDER_SERVICES')
-    logger.info(
-        'Provider demographics and service data uploaded to Snowflake. (Tables 1 & 2/12)'
-    )
+        demographics_df.drop_duplicates(inplace=True)
+        if demographics_df.shape[0] != demographics_df['RNDRNG_NPI'].nunique():
+            raise ValueError('Duplicate NPIs in demographics after duplicates dropped.')
 
-    current_table = 'Hospital General Information'
-    hospital_info_df = transform_data(
-        HOSPITAL_GENERAL_INFORMATION,
-        specify_dtype={'ZIP Code': str, 'Hospital overall rating footnote': str},
-    )
-    df_to_snowflake(snow_conn, hospital_info_df, 'HOSPITAL_GENERAL_INFORMATION')
-    logger.info('Hospital General Information uploaded to Snowflake. (Table 3/12)')
+        df_to_snowflake(snow_conn, demographics_df, 'PROVIDER_DEMOGRAPHICS')
+        df_to_snowflake(snow_conn, services_df, 'PROVIDER_SERVICES')
+        logger.info(
+            'Provider demographics and service data uploaded to Snowflake. (Tables 1 & 2/12)'
+        )
 
-    current_table = 'Provider Hospital Affiliation'
-    affiliation_df = transform_data(
-        FACILITY_AFFILIATION_DATA,
-        filter_rows={'facility_type': 'Hospital'},
-        keep_columns=['NPI', 'Facility Affiliations Certification Number'],
-        drop_duplicates=True,
-    )
-    df_to_snowflake(snow_conn, affiliation_df, 'PROVIDER_HOSPITAL_AFFILIATION')
-    logger.info(
-        'Provider facility affiliation data uploaded to Snowflake. (Table 4/12)'
-    )
+        current_table = 'Hospital General Information'
+        hospital_info_df = transform_data(
+            HOSPITAL_GENERAL_INFORMATION,
+            specify_dtype={'ZIP Code': str, 'Hospital overall rating footnote': str},
+        )
+        df_to_snowflake(snow_conn, hospital_info_df, 'HOSPITAL_GENERAL_INFORMATION')
+        logger.info('Hospital General Information uploaded to Snowflake. (Table 3/12)')
 
-    current_table = 'MIPS Performance'
-    mips_performance_df = transform_data(
-        MIPS_PERFORMANCE_DATA, specify_dtype={'Org_PAC_ID': str}
-    )
-    df_to_snowflake(snow_conn, mips_performance_df, 'MIPS_PERFORMANCE')
-    logger.info('MIPS performance data uploaded to Snowflake. (Table 5/12)')
+        current_table = 'Provider Hospital Affiliation'
+        affiliation_df = transform_data(
+            FACILITY_AFFILIATION_DATA,
+            filter_rows={'facility_type': 'Hospital'},
+            keep_columns=['NPI', 'Facility Affiliations Certification Number'],
+            drop_duplicates=True,
+        )
+        df_to_snowflake(snow_conn, affiliation_df, 'PROVIDER_HOSPITAL_AFFILIATION')
+        logger.info(
+            'Provider facility affiliation data uploaded to Snowflake. (Table 4/12)'
+        )
 
-    current_table = 'MIPS Metrics'
-    mips_metrics_df = transform_data(
-        MIPS_METRICS_DATA, specify_dtype={'Ind_PAC_ID': str}
-    )
+        current_table = 'MIPS Performance'
+        mips_performance_df = transform_data(
+            MIPS_PERFORMANCE_DATA, specify_dtype={'Org_PAC_ID': str}
+        )
+        df_to_snowflake(snow_conn, mips_performance_df, 'MIPS_PERFORMANCE')
+        logger.info('MIPS performance data uploaded to Snowflake. (Table 5/12)')
 
-    df_to_snowflake(snow_conn, mips_metrics_df, 'MIPS_METRICS')
-    logger.info('MIPS scores data uploaded to Snowflake. (Table 6/12)')
+        current_table = 'MIPS Metrics'
+        mips_metrics_df = transform_data(
+            MIPS_METRICS_DATA, specify_dtype={'Ind_PAC_ID': str}
+        )
 
-    current_table = 'Hospital HCAHPS'
-    hcahps_df = transform_data(
-        HCAHPS_DATA,
-        specify_dtype={
-            'ZIP Code': str,
-            'Patient Survey Star Rating Footnote': str,
-            'HCAHPS Answer Percent Footnote': str,
-            'Number of Completed Surveys Footnote': str,
-            'Survey Response Rate Percent Footnote': str,
-        },
-    )
-    df_to_snowflake(snow_conn, hcahps_df, 'HOSPITAL_HCAHPS')
-    logger.info('Hospital HCAHPS data uploaded to Snowflake. (Table 7/12)')
+        df_to_snowflake(snow_conn, mips_metrics_df, 'MIPS_METRICS')
+        logger.info('MIPS scores data uploaded to Snowflake. (Table 6/12)')
 
-    current_table = 'Hospital HAI'
-    hai_df = transform_data(HAI_DATA, specify_dtype={'ZIP Code': str, 'Footnote': str})
-    df_to_snowflake(snow_conn, hai_df, 'HOSPITAL_HAI')
-    logger.info('Hospital HAI data uploaded to Snowflake. (Table 8/12)')
+        current_table = 'Hospital HCAHPS'
+        hcahps_df = transform_data(
+            HCAHPS_DATA,
+            specify_dtype={
+                'ZIP Code': str,
+                'Patient Survey Star Rating Footnote': str,
+                'HCAHPS Answer Percent Footnote': str,
+                'Number of Completed Surveys Footnote': str,
+                'Survey Response Rate Percent Footnote': str,
+            },
+        )
+        df_to_snowflake(snow_conn, hcahps_df, 'HOSPITAL_HCAHPS')
+        logger.info('Hospital HCAHPS data uploaded to Snowflake. (Table 7/12)')
 
-    current_table = 'Hospital Unplanned Visits'
-    unplanned_visit_df = transform_data(
-        UNPLANNED_VISIT_DATA, specify_dtype={'ZIP Code': str, 'Footnote': str}
-    )
-    df_to_snowflake(snow_conn, unplanned_visit_df, 'HOSPITAL_UNPLANNED_VISITS')
-    logger.info('Hospital unplanned visit data uploaded to Snowflake. (Table 9/12)')
+        current_table = 'Hospital HAI'
+        hai_df = transform_data(
+            HAI_DATA, specify_dtype={'ZIP Code': str, 'Footnote': str}
+        )
+        df_to_snowflake(snow_conn, hai_df, 'HOSPITAL_HAI')
+        logger.info('Hospital HAI data uploaded to Snowflake. (Table 8/12)')
 
-    current_table = 'Hospital Complications & Deaths'
-    complications_df = transform_data(
-        HOSPITAL_COMPLICATIONS_DATA, specify_dtype={'ZIP Code': str, 'Footnote': str}
-    )
-    df_to_snowflake(snow_conn, complications_df, 'HOSPITAL_COMPLICATIONS_DEATHS')
-    logger.info('Hospital complications data uploaded to Snowflake. (Table 10/12)')
+        current_table = 'Hospital Unplanned Visits'
+        unplanned_visit_df = transform_data(
+            UNPLANNED_VISIT_DATA, specify_dtype={'ZIP Code': str, 'Footnote': str}
+        )
+        df_to_snowflake(snow_conn, unplanned_visit_df, 'HOSPITAL_UNPLANNED_VISITS')
+        logger.info('Hospital unplanned visit data uploaded to Snowflake. (Table 9/12)')
 
-    current_table = "RUCA ZIP Codes"
-    ruca_df = transform_data(
-        RUCA_ZIP_CODES,
-        specify_dtype={'ZIPCode': str},
-        keep_columns=['ZIPCode', 'PrimaryRUCA'],
-        drop_duplicates=True,
-    )
-    df_to_snowflake(snow_conn, ruca_df, 'RUCA_ZIP_CODES')
-    logger.info('RUCA - ZIP Code data uploaded to Snowflake. (Table 11/12)')
+        current_table = 'Hospital Complications & Deaths'
+        complications_df = transform_data(
+            HOSPITAL_COMPLICATIONS_DATA,
+            specify_dtype={'ZIP Code': str, 'Footnote': str},
+        )
+        df_to_snowflake(snow_conn, complications_df, 'HOSPITAL_COMPLICATIONS_DEATHS')
+        logger.info('Hospital complications data uploaded to Snowflake. (Table 10/12)')
 
-    current_table = 'Provider Summary'
-    provider_summary_df = transform_data(
-        PROVIDER_SUMMARY_DATA,
-        specify_dtype={'Rndrng_NPI': str},
-        keep_columns=PROVIDER_SUMMARY_KEEP_COLUMNS,
-    )
-    df_to_snowflake(snow_conn, provider_summary_df, 'PROVIDER_SUMMARY')
-    logger.info('Provider summary data uploaded to Snowflake. (Table 12/12)')
+        current_table = "RUCA ZIP Codes"
+        ruca_df = transform_data(
+            RUCA_ZIP_CODES,
+            specify_dtype={'ZIPCode': str},
+            keep_columns=['ZIPCode', 'PrimaryRUCA'],
+            drop_duplicates=True,
+        )
+        df_to_snowflake(snow_conn, ruca_df, 'RUCA_ZIP_CODES')
+        logger.info('RUCA - ZIP Code data uploaded to Snowflake. (Table 11/12)')
 
-except Exception as e:
-    logger.error(f'Table: {current_table},  Error: {e}')
-    raise
+        current_table = 'Provider Summary'
+        provider_summary_df = transform_data(
+            PROVIDER_SUMMARY_DATA,
+            specify_dtype={'Rndrng_NPI': str},
+            keep_columns=PROVIDER_SUMMARY_KEEP_COLUMNS,
+        )
+        df_to_snowflake(snow_conn, provider_summary_df, 'PROVIDER_SUMMARY')
+        logger.info('Provider summary data uploaded to Snowflake. (Table 12/12)')
 
-finally:
-    if snow_conn:
-        snow_conn.close()
+    except Exception as e:
+        logger.error(f'Table: {current_table},  Error: {e}')
+        raise
+
+    finally:
+        if snow_conn:
+            snow_conn.close()
+
+
+if __name__ == '__main__':
+    main()
