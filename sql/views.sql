@@ -25,7 +25,7 @@ CREATE OR REPLACE VIEW provider_profile_view AS (
 CREATE OR REPLACE VIEW hospital_quality_summary_view AS (
     SELECT
         facility_id,
-        'HAI' as source,
+        'HAI' as SOURCE,
         measure_id,
         measure_name,
         compared_to_national,
