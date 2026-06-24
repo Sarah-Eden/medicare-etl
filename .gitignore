@@ -1,8 +1,9 @@
 venv/
 data/
-ipynb_checkpoints
+.ipynb_checkpoints
 __pycache__/
 .DS_Store
 .env
 notebooks/
 dashboard/
+.venv/

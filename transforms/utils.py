@@ -34,7 +34,7 @@ def create_snowflake_connection():
 def df_to_snowflake(conn, df, table_name):
     """Writes a DataFrame to a Snowflake table, creating or overwriting the table if it exists."""
     df = df.reset_index(drop=True)
-    success, nchunks, nrows, _ = write_pandas(
+    success, _nchunks, _nrows, _ = write_pandas(
         conn, df, table_name, auto_create_table=True, overwrite=True
     )
 
