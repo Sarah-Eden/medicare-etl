@@ -1,6 +1,7 @@
 import logging
 from transforms.utils import create_snowflake_connection, df_to_snowflake
 from transforms.transforms import transform_data
+from create_views_constraints import run_scripts
 
 PROVIDER_SERVICE_DATA = 'data/MUP_PHY_R25_P05_V20_D23_Prov_Svc.csv'
 HOSPITAL_GENERAL_INFORMATION = 'data/Hospital_General_Information.csv'
@@ -243,6 +244,9 @@ def main():
         )
         df_to_snowflake(snow_conn, provider_summary_df, 'PROVIDER_SUMMARY')
         logger.info('Provider summary data uploaded to Snowflake. (Table 12/12)')
+
+        current_table = "Run Scripts"
+        run_scripts(snow_conn)
 
     except Exception as e:
         logger.error(f'Table: {current_table},  Error: {e}')

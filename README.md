@@ -150,5 +150,3 @@ Run main pipeline to extract and transform data from the CSV files and load it i
 ```bash
 python main.py
 ```
-
-After loading, run `sql/constraints.sql` and `sql/views.sql` in Snowflake to apply keys and create views.
