@@ -83,7 +83,7 @@ One row per unique NPI.
 | BENE_AGE_GT_84_CNT               | Integer | Number of Beneficiaries Age Greater Than 84                                                                                                                                                               |
 | BENE_FEML_CNT                    | Integer | Number of Female Beneficiaries                                                                                                                                                                            |
 | BENE_MALE_CNT                    | Integer | Number of Male Beneficiaries                                                                                                                                                                              |
-| BENE_RACE_WHT_CNT                | Integer | Number of Non-Hispanic White Beneficia                                                                                                                                                                    |
+| BENE_RACE_WHT_CNT                | Integer | Number of Non-Hispanic White Beneficiaries                                                                                                                                                                |
 | BENE_RACE_BLACK_CNT              | Integer | Number of Black or African American Beneficiaries                                                                                                                                                         |
 | BENE_RACE_API_CNT                | Integer | Number of Asian Pacific Islander Beneficiaries                                                                                                                                                            |
 | BENE_RACE_HSPNC_CNT              | Integer | Number of Hispanic Beneficiaries                                                                                                                                                                          |
@@ -124,7 +124,7 @@ Hospital demographic information and group measure performance data.
 
 | Column                                                | Type | Description                                           |
 | ----------------------------------------------------- | ---- | ----------------------------------------------------- |
-| FACILITY_ID                                           | Text | Facility ID (Primary Key)                             |
+| FACILITY_ID                                           | Text | Medicare CMS Certification Number (Primary Key)       |
 | FACILITY_NAME                                         | Text | Facility name                                         |
 | ADDRESS                                               | Text | Street address                                        |
 | CITY_TOWN                                             | Text | City                                                  |
@@ -139,7 +139,7 @@ Hospital demographic information and group measure performance data.
 | MEETS_CRITERIA_FOR_BIRTHING_FRIENDLY_DESIGNATION      | Text | Meets criteria for birthing friendly designation      |
 | HOSPITAL_OVERALL_RATING                               | Text | Overall Rating                                        |
 | HOSPITAL_OVERALL_RATING_FOOTNOTE                      | Text | Footnote codes                                        |
-| MORT_GROUP_MEASURE_COUNT                              | Text | Mortality Group Measure Coun                          |
+| MORT_GROUP_MEASURE_COUNT                              | Text | Mortality Group Measure Count                         |
 | COUNT_OF_FACILITY_MORT_MEASURES                       | Text | Count of Facility Mortality Measures                  |
 | COUNT_OF_MORT_MEASURES_BETTER                         | Text | Count of Facility Mortality Measures Better           |
 | COUNT_OF_MORT_MEASURES_NO_DIFFERENT                   | Text | Count of Facility Mortality Measures No Different     |
@@ -168,14 +168,14 @@ Hospital demographic information and group measure performance data.
 
 Provides the link between provider-hospital tables.
 
-| Column                                     | Type   | Description                                              |
-| ------------------------------------------ | ------ | -------------------------------------------------------- |
-| NPI                                        | Number | Primary Key, Foreign Key to PROVIDER_DEMOGRAPHICS        |
-| FACILITY_AFFILIATIONS_CERTIFICATION_NUMBER | Text   | Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION |
+| Column                                     | Type   | Description                                                                                  |
+| ------------------------------------------ | ------ | -------------------------------------------------------------------------------------------- |
+| NPI                                        | Number | National Provider Identifier (Primary Key, Foreign Key to PROVIDER_DEMOGRAPHICS)             |
+| FACILITY_AFFILIATIONS_CERTIFICATION_NUMBER | Text   | Medicare CMS Certification Number (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
 
 ### MIPS_PERFORMANCE
 
-Publicly reported final scores and performance category scores for clinicans that participate in the Merit-based Incentive Payment System (MIPS). A null value in any performance category indicates it did not contribute to the final score.
+Publicly reported final scores and performance category scores for clinicians that participate in the Merit-based Incentive Payment System (MIPS). A null value in any performance category indicates it did not contribute to the final score.
 
 | Column                                      | Type   | Description                                                                      |
 | ------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
@@ -184,8 +184,8 @@ Publicly reported final scores and performance category scores for clinicans tha
 | PROVIDER_LAST_NAME                          | Text   | Last Name                                                                        |
 | PROVIDER_FIRST_NAME                         | Text   | First Name                                                                       |
 | SOURCE                                      | Text   | Method by which the clinician was scored                                         |
-| FACILITY_BASED_SCORING_CERTIFICATION_NUMBER | Float  | All null, no facility based clinicians in 2023                                   |
-| FACILITY_NAME                               | Float  | All null, no facility based clinicians in 2023                                   |
+| FACILITY_BASED_SCORING_CERTIFICATION_NUMBER | Float  | CMS Certification Number of the Facility used for Facility Based Scoring         |
+| FACILITY_NAME                               | Float  | Name of the Facility used for Facility Based Scoring                             |
 | QUALITY_CATEGORY_SCORE                      | Float  | Quality performance category score                                               |
 | PI_CATEGORY_SCORE                           | Float  | Promoting Interoperability performance category score                            |
 | IA_CATEGORY_SCORE                           | Float  | Improvement Activities performance category score                                |
@@ -222,113 +222,113 @@ Individual measure-level detail for MIPS quality reporting.
 
 Complication and mortality measures by hospital.
 
-| Column               | Type | Description                                                            |
-| -------------------- | ---- | ---------------------------------------------------------------------- |
-| FACILITY_ID          | Text | Facility ID (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
-| FACILITY_NAME        | Text | Facility Name                                                          |
-| ADDRESS              | Text | Address                                                                |
-| CITY_TOWN            | Text | City / Town                                                            |
-| STATE                | Text | State                                                                  |
-| ZIP_CODE             | Text | 5-digit zip code                                                       |
-| COUNTY_PARISH        | Text | County / Parish                                                        |
-| TELEPHONE_NUMBER     | Text | Telephone Number                                                       |
-| MEASURE_ID           | Text | Measure ID (Primary Key)                                               |
-| MEASURE_NAME         | Text | Measure Name                                                           |
-| COMPARED_TO_NATIONAL | Text | Performance vs national rate/value                                     |
-| DENOMINATOR          | Text | Cases in the denominator                                               |
-| SCORE                | Text | Measure score                                                          |
-| LOWER_ESTIMATE       | Text | Lower estimate                                                         |
-| HIGHER_ESTIMATE      | Text | Higher estimates                                                       |
-| FOOTNOTE             | Text | Footnote codes, may be comma-separated                                 |
-| START_DATE           | Text | Measurement period start                                               |
-| END_DATE             | Text | Measurement period end                                                 |
+| Column               | Type | Description                                                                                  |
+| -------------------- | ---- | -------------------------------------------------------------------------------------------- |
+| FACILITY_ID          | Text | Medicare CMS Certification Number (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
+| FACILITY_NAME        | Text | Facility Name                                                                                |
+| ADDRESS              | Text | Address                                                                                      |
+| CITY_TOWN            | Text | City / Town                                                                                  |
+| STATE                | Text | State                                                                                        |
+| ZIP_CODE             | Text | 5-digit zip code                                                                             |
+| COUNTY_PARISH        | Text | County / Parish                                                                              |
+| TELEPHONE_NUMBER     | Text | Telephone Number                                                                             |
+| MEASURE_ID           | Text | Measure ID (Primary Key)                                                                     |
+| MEASURE_NAME         | Text | Measure Name                                                                                 |
+| COMPARED_TO_NATIONAL | Text | Performance vs national rate/value                                                           |
+| DENOMINATOR          | Text | Cases in the denominator                                                                     |
+| SCORE                | Text | Measure score                                                                                |
+| LOWER_ESTIMATE       | Text | Lower estimate                                                                               |
+| HIGHER_ESTIMATE      | Text | Higher estimates                                                                             |
+| FOOTNOTE             | Text | Footnote codes, may be comma-separated                                                       |
+| START_DATE           | Text | Measurement period start                                                                     |
+| END_DATE             | Text | Measurement period end                                                                       |
 
 ### HOSPITAL_UNPLANNED_VISITS
 
 Readmission and return visit measures by hospital. Same structure as HOSPITAL_COMPLICATIONS_DEATHS with two additional columns.
 
-| Column                      | Type | Description                                                            |
-| --------------------------- | ---- | ---------------------------------------------------------------------- |
-| FACILITY_ID                 | Text | Facility ID (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
-| FACILITY_NAME               | Text | Facility Name                                                          |
-| ADDRESS                     | Text | Address                                                                |
-| CITY_TOWN                   | Text | City / Town                                                            |
-| STATE                       | Text | State                                                                  |
-| ZIP_CODE                    | Text | 5-digit zip code                                                       |
-| COUNTY_PARISH               | Text | County / Parish                                                        |
-| TELEPHONE_NUMBER            | Text | Telephone Number                                                       |
-| MEASURE_ID                  | Text | Measure ID (Primary Key)                                               |
-| MEASURE_NAME                | Text | Measure Name                                                           |
-| COMPARED_TO_NATIONAL        | Text | Performance vs national rate/value/expected                            |
-| DENOMINATOR                 | Text | Cases in the denominator                                               |
-| SCORE                       | Text | Measure score                                                          |
-| LOWER_ESTIMATE              | Text | Lower estimate                                                         |
-| HIGHER_ESTIMATE             | Text | Higher estimate                                                        |
-| NUMBER_OF_PATIENTS          | Text | Total patients                                                         |
-| NUMBER_OF_PATIENTS_RETURNED | Text | Patients who returned                                                  |
-| FOOTNOTE                    | Text | Footnote codes, may be comma-separated                                 |
-| START_DATE                  | Text | Measurement period start                                               |
-| END_DATE                    | Text | Measurement period end                                                 |
+| Column                      | Type | Description                                                                                  |
+| --------------------------- | ---- | -------------------------------------------------------------------------------------------- |
+| FACILITY_ID                 | Text | Medicare CMS Certification Number (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
+| FACILITY_NAME               | Text | Facility Name                                                                                |
+| ADDRESS                     | Text | Address                                                                                      |
+| CITY_TOWN                   | Text | City / Town                                                                                  |
+| STATE                       | Text | State                                                                                        |
+| ZIP_CODE                    | Text | 5-digit zip code                                                                             |
+| COUNTY_PARISH               | Text | County / Parish                                                                              |
+| TELEPHONE_NUMBER            | Text | Telephone Number                                                                             |
+| MEASURE_ID                  | Text | Measure ID (Primary Key)                                                                     |
+| MEASURE_NAME                | Text | Measure Name                                                                                 |
+| COMPARED_TO_NATIONAL        | Text | Performance vs national rate/value/expected                                                  |
+| DENOMINATOR                 | Text | Cases in the denominator                                                                     |
+| SCORE                       | Text | Measure score                                                                                |
+| LOWER_ESTIMATE              | Text | Lower estimate                                                                               |
+| HIGHER_ESTIMATE             | Text | Higher estimate                                                                              |
+| NUMBER_OF_PATIENTS          | Text | Total patients                                                                               |
+| NUMBER_OF_PATIENTS_RETURNED | Text | Patients who returned                                                                        |
+| FOOTNOTE                    | Text | Footnote codes, may be comma-separated                                                       |
+| START_DATE                  | Text | Measurement period start                                                                     |
+| END_DATE                    | Text | Measurement period end                                                                       |
 
 ### HOSPITAL_HAI
 
 Healthcare-associated infection measures by hospital.
 
-| Column               | Type | Description                                                            |
-| -------------------- | ---- | ---------------------------------------------------------------------- |
-| FACILITY_ID          | Text | Facility ID (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
-| FACILITY_NAME        | Text | Facility Name                                                          |
-| ADDRESS              | Text | Address                                                                |
-| CITY_TOWN            | Text | City / Town                                                            |
-| STATE                | Text | State                                                                  |
-| ZIP_CODE             | Text | 5-digit zip code                                                       |
-| COUNTY_PARISH        | Text | County / Parish                                                        |
-| TELEPHONE_NUMBER     | Text | Telephone Number                                                       |
-| MEASURE_ID           | Text | Measure ID (Primary Key)                                               |
-| MEASURE_NAME         | Text | Measure Name                                                           |
-| COMPARED_TO_NATIONAL | Text | Performance vs national rate/value/expected                            |
-| SCORE                | Text | Measure Score                                                          |
-| FOOTNOTE             | Text | Footnote codes, may be comma-separated                                 |
-| START_DATE           | Text | Measurement period start                                               |
-| END_DATE             | Text | Measurement period end                                                 |
+| Column               | Type | Description                                                                                  |
+| -------------------- | ---- | -------------------------------------------------------------------------------------------- |
+| FACILITY_ID          | Text | Medicare CMS Certification Number (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
+| FACILITY_NAME        | Text | Facility Name                                                                                |
+| ADDRESS              | Text | Address                                                                                      |
+| CITY_TOWN            | Text | City / Town                                                                                  |
+| STATE                | Text | State                                                                                        |
+| ZIP_CODE             | Text | 5-digit zip code                                                                             |
+| COUNTY_PARISH        | Text | County / Parish                                                                              |
+| TELEPHONE_NUMBER     | Text | Telephone Number                                                                             |
+| MEASURE_ID           | Text | Measure ID (Primary Key)                                                                     |
+| MEASURE_NAME         | Text | Measure Name                                                                                 |
+| COMPARED_TO_NATIONAL | Text | Performance vs national rate/value/expected                                                  |
+| SCORE                | Text | Measure Score                                                                                |
+| FOOTNOTE             | Text | Footnote codes, may be comma-separated                                                       |
+| START_DATE           | Text | Measurement period start                                                                     |
+| END_DATE             | Text | Measurement period end                                                                       |
 
 ### HOSPITAL_HCAHPS
 
 Hospital Consumer Assessment of Healthcare Providers and Systems survey results.
 
-| Column                                | Type | Description                                                            |
-| ------------------------------------- | ---- | ---------------------------------------------------------------------- |
-| FACILITY_ID                           | Text | Facility ID (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
-| FACILITY_NAME                         | Text | Facility Name                                                          |
-| ADDRESS                               | Text | Address                                                                |
-| CITY_TOWN                             | Text | City / Town                                                            |
-| STATE                                 | Text | State                                                                  |
-| ZIP_CODE                              | Text | 5-digit zip code                                                       |
-| COUNTY_PARISH                         | Text | County / Parish                                                        |
-| TELEPHONE_NUMBER                      | Text | Telephone Number                                                       |
-| HCAHPS_MEASURE_ID                     | Text | Measure ID (Primary Key)                                               |
-| HCAHPS_QUESTION                       | Text | Survey question or measure category                                    |
-| HCAHPS_ANSWER_DESCRIPTION             | Text | Response label                                                         |
-| PATIENT_SURVEY_STAR_RATING            | Text | 1-5 star rating, "Not Applicable" for non-star rows                    |
-| PATIENT_SURVEY_STAR_RATING_FOOTNOTE   | Text | Star Rating Footnote                                                   |
-| HCAHPS_ANSWER_PERCENT                 | Text | Response percentage, "Not Applicable" for star/linear rows             |
-| HCAHPS_ANSWER_PERCENT_FOOTNOTE        | Text | Answer Percent Footnote                                                |
-| HCAHPS_LINEAR_MEAN_VALUE              | Text | Linear mean score for the measure domain                               |
-| NUMBER_OF_COMPLETED_SURVEYS           | Text | Completed surveys for this facility                                    |
-| NUMBER_OF_COMPLETED_SURVEYS_FOOTNOTE  | Text | Number of Completed Surveys Footnote                                   |
-| SURVEY_RESPONSE_RATE_PERCENT          | Text | Survey response rate                                                   |
-| SURVEY_RESPONSE_RATE_PERCENT_FOOTNOTE | Text | Survey response rate footnote                                          |
-| START_DATE                            | Text | Measurement period start                                               |
-| END_DATE                              | Text | Measurement period end                                                 |
+| Column                                | Type | Description                                                                                  |
+| ------------------------------------- | ---- | -------------------------------------------------------------------------------------------- |
+| FACILITY_ID                           | Text | Medicare CMS Certification Number (Primary Key, Foreign Key to HOSPITAL_GENERAL_INFORMATION) |
+| FACILITY_NAME                         | Text | Facility Name                                                                                |
+| ADDRESS                               | Text | Address                                                                                      |
+| CITY_TOWN                             | Text | City / Town                                                                                  |
+| STATE                                 | Text | State                                                                                        |
+| ZIP_CODE                              | Text | 5-digit zip code                                                                             |
+| COUNTY_PARISH                         | Text | County / Parish                                                                              |
+| TELEPHONE_NUMBER                      | Text | Telephone Number                                                                             |
+| HCAHPS_MEASURE_ID                     | Text | Measure ID (Primary Key)                                                                     |
+| HCAHPS_QUESTION                       | Text | Survey question or measure category                                                          |
+| HCAHPS_ANSWER_DESCRIPTION             | Text | Response label                                                                               |
+| PATIENT_SURVEY_STAR_RATING            | Text | 1-5 star rating, "Not Applicable" for non-star rows                                          |
+| PATIENT_SURVEY_STAR_RATING_FOOTNOTE   | Text | Star Rating Footnote                                                                         |
+| HCAHPS_ANSWER_PERCENT                 | Text | Response percentage, "Not Applicable" for star/linear rows                                   |
+| HCAHPS_ANSWER_PERCENT_FOOTNOTE        | Text | Answer Percent Footnote                                                                      |
+| HCAHPS_LINEAR_MEAN_VALUE              | Text | Linear mean score for the measure domain                                                     |
+| NUMBER_OF_COMPLETED_SURVEYS           | Text | Completed surveys for this facility                                                          |
+| NUMBER_OF_COMPLETED_SURVEYS_FOOTNOTE  | Text | Number of Completed Surveys Footnote                                                         |
+| SURVEY_RESPONSE_RATE_PERCENT          | Text | Survey response rate                                                                         |
+| SURVEY_RESPONSE_RATE_PERCENT_FOOTNOTE | Text | Survey response rate footnote                                                                |
+| START_DATE                            | Text | Measurement period start                                                                     |
+| END_DATE                              | Text | Measurement period end                                                                       |
 
 ### RUCA_ZIP_CODES
 
 Rural-Urban Commuting Area (RUCA) codes by zip code. Published by the USDA, RUCA codes classify areas by urbanization, population density, and commuting patterns.
 
-| Column      | Type    | Description |
-| ----------- | ------- | ----------- |
-| ZIPCODE     | Text    | PK          |
-| PRIMARYRUCA | Integer | RUCA Code   |
+| Column      | Type    | Description                    |
+| ----------- | ------- | ------------------------------ |
+| ZIPCODE     | Text    | 5-digit Zip Code (Primary Key) |
+| PRIMARYRUCA | Integer | RUCA Code                      |
 
 ## Views
 
@@ -357,7 +357,7 @@ One row per facility-measure. Combines data from HOSPITAL_COMPLICATIONS_DEATHS, 
 
 | Column                        | Source        | Description                                                                            |
 | ----------------------------- | ------------- | -------------------------------------------------------------------------------------- |
-| FACILITY_ID                   | Source tables | Facility ID                                                                            |
+| FACILITY_ID                   | Source tables | Medicare CMS Certification Number                                                      |
 | SOURCE                        | Derived       | Table of origin: "HAI", "Complications Deaths", or "Unplanned Visits"                  |
 | MEASURE_ID                    | Source tables | Measure ID                                                                             |
 | MEASURE_NAME                  | Source tables | Measure Name                                                                           |
@@ -369,14 +369,14 @@ One row per facility-measure. Combines data from HOSPITAL_COMPLICATIONS_DEATHS, 
 
 One row per facility per star rating domain.
 
-| Column                       | Source          | Description                    |
-| ---------------------------- | --------------- | ------------------------------ |
-| FACILITY_ID                  | HOSPITAL_HCAHPS | Facility ID                    |
-| HCAHPS_MEASURE_ID            | HOSPITAL_HCAHPS | Measure ID                     |
-| HCAHPS_QUESTION              | HOSPITAL_HCAHPS | Measure Question / Description |
-| PATIENT_SURVEY_STAR_RATING   | HOSPITAL_HCAHPS | Patient Star Rating            |
-| NUMBER_OF_COMPLETED_SURVEYS  | HOSPITAL_HCAHPS | Number of Completed Surveys    |
-| SURVEY_RESPONSE_RATE_PERCENT | HOSPITAL_HCAHPS | Survey Response Rate Percent   |
+| Column                       | Source          | Description                       |
+| ---------------------------- | --------------- | --------------------------------- |
+| FACILITY_ID                  | HOSPITAL_HCAHPS | Medicare CMS Certification Number |
+| HCAHPS_MEASURE_ID            | HOSPITAL_HCAHPS | Measure ID                        |
+| HCAHPS_QUESTION              | HOSPITAL_HCAHPS | Measure Question / Description    |
+| PATIENT_SURVEY_STAR_RATING   | HOSPITAL_HCAHPS | Patient Star Rating               |
+| NUMBER_OF_COMPLETED_SURVEYS  | HOSPITAL_HCAHPS | Number of Completed Surveys       |
+| SURVEY_RESPONSE_RATE_PERCENT | HOSPITAL_HCAHPS | Survey Response Rate Percent      |
 
 ### HCAHPS_DETAILED_VIEW
 
@@ -384,7 +384,7 @@ One row per facility per survey question and answer option.
 
 | Column                    | Source          | Description                                        |
 | ------------------------- | --------------- | -------------------------------------------------- |
-| FACILITY_ID               | HOSPITAL_HCAHPS | Facility ID                                        |
+| FACILITY_ID               | HOSPITAL_HCAHPS | Medicare CMS Certification Number                  |
 | HCAHPS_MEASURE_ID         | HOSPITAL_HCAHPS | Measure ID                                         |
 | HCAHPS_QUESTION           | HOSPITAL_HCAHPS | Measure Question / Rating (Always/sometimes/never) |
 | HCAHPS_ANSWER_DESCRIPTION | HOSPITAL_HCAHPS | Answer Description                                 |
