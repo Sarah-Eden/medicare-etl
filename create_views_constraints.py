@@ -2,12 +2,7 @@ from transforms.utils import create_snowflake_connection
 import logging
 
 
-def run_scripts(conn):
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    logger.addHandler(handler)
-
+def run_scripts(conn, logger):
     scripts = ['sql/constraints.sql', 'sql/views.sql']
     current_script = ""
 
@@ -24,16 +19,21 @@ def run_scripts(conn):
             logger.info(f'{current_script} executed successfully.')
 
     except Exception as e:
-        logger.error(f'Script: {current_script},  Error: {e}')
+        logger.error(f'Script: {current_script}, Error: {e}')
         raise
 
 
 if __name__ == '__main__':
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    stream_handler = logging.StreamHandler()
+    logger.addHandler(stream_handler)
     conn = None
 
     try:
         conn = create_snowflake_connection()
-        run_scripts(conn)
+        run_scripts(conn, logger)
     finally:
         if conn:
             conn.close()

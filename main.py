@@ -246,10 +246,10 @@ def main():
         logger.info('Provider summary data uploaded to Snowflake. (Table 12/12)')
 
         current_table = "Run Scripts"
-        run_scripts(snow_conn)
+        run_scripts(snow_conn, logger)
 
     except Exception as e:
-        logger.error(f'Table: {current_table},  Error: {e}')
+        logger.error(f'Table: {current_table}, Error: {e}')
         raise
 
     finally:
