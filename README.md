@@ -11,15 +11,7 @@ This project builds an end-to-end ETL pipeline to analyze Medicare provider and 
 
 ## Data
 
-All data is publicly available from [CMS Data](https://data.cms.gov/) and the [CMS Provider Data Catalog](https://data.cms.gov). Source files come from multiple CMS archives to ensure all are from the same reporting period. See docs/data_sources.md for the complete list of source files, download locations, and archive selection.
-
-## Pipeline
-
-**Extraction:** raw CMS CSV files downloaded and loaded using Python/pandas
-**Transformation:** data cleaning, type standardization, and schema normalization applied before loading
-**Loading:** transformed data written to Snowflake via snowflake-connector-python using RSA key pair authentication
-**Modeling:** SQL views created in Snowflake to support dashboard requirements
-**Visualization:** Power BI dashboard in Import mode with DAX measures and calculated columns
+All data is publicly available from [CMS Data](https://data.cms.gov/) and the [CMS Provider Data Catalog](https://data.cms.gov/provider-data/). Source files come from multiple CMS archives to ensure all are from the same reporting period. See docs/data_sources.md for the complete list of source files, download locations, and archive selection.
 
 ## Schema
 
@@ -125,7 +117,7 @@ erDiagram
 
 - Python 3.14
 - Snowflake account with key-pair authentication
-- Power Bi Desktop
+- Power BI Desktop
 
 ### Installation
 
